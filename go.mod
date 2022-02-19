@@ -1,7 +1,5 @@
 module github/ppaulogustavo/aws-st-post
 
-go 1.17
-
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/go-chi/chi/v5 v5.0.7
