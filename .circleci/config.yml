@@ -64,4 +64,4 @@ workflows:
           repo: ${CIRCLE_PROJECT_REPONAME}
           tag: ${CIRCLE_BUILD_NUM}
           requires:
-            - docker_hub_build_push_image
+            - build_test
