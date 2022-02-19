@@ -49,6 +49,8 @@ jobs:
             echo 'export IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}' >> ${BASH_ENV}
             source ${BASH_ENV}
             docker build -t ${REPOSITORY}/${IMAGE_NAME} -t ${REPOSITORY}/${IMAGE_NAME}:${TAG} .
+
+
 #            docker push ${REPOSITORY}/${IMAGE_NAME}
 
 workflows:
@@ -59,12 +61,3 @@ workflows:
       - docker_hub_build_push_image:
           requires:
             - build_test
-      - build_and_push_image:
-          jobs:
-            - aws-ecr/build-and-push-image:
-                region: AWS_REGION
-                account-url: ${AWS_ECR_ACCOUNT_URL}
-                repo: ${CIRCLE_PROJECT_REPONAME}
-                tag: ${CIRCLE_BUILD_NUM}
-          requires:
-            - docker_hub_build_push_image
