@@ -36,19 +36,34 @@ jobs:
       - store_test_results: # upload test results for display in Test Summary
           path: /tmp/test-results
   docker_hub_build_push_image:
-    requires:
-      - build_test
-  aws-ecr/build_and_push_image:
-    region: ${AWS_REGION}
-    account-url: ${AWS_ECR_ACCOUNT_URL}
-    repo: ${CIRCLE_PROJECT_REPONAME}
-    tag: ${CIRCLE_BUILD_NUM}
-    requires:
-      - build_test
-
+    docker:
+      - image: cimg/go:1.16
+    steps:
+      - checkout
+      - setup_remote_docker:
+          docker_layer_caching: false
+      - run:
+          name: Build and push Docker image to Docker Hub
+          command: |
+            echo 'export TAG=0.1.${CIRCLE_BUILD_NUM}' >> ${BASH_ENV}
+            echo 'export IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}' >> ${BASH_ENV}
+            source ${BASH_ENV}
+            docker build -t ${IMAGE_NAME} .
+            docker tag ${IMAGE_NAME}:${TAG} ${REPOSITORY}/${IMAGE_NAME}:${TAG}
+            docker push ${REPOSITORY}/${IMAGE_NAME}
 
 workflows:
   version: 2
   build-workflow:
     jobs:
       - build_test
+      - docker_hub_build_push_image:
+          requires:
+            - build_test
+      - aws-ecr/build_and_push_image:
+          region: AWS_REGION
+          account-url: AWS_ECR_ACCOUNT_URL
+          repo: ${CIRCLE_PROJECT_REPONAME}
+          tag: ${CIRCLE_BUILD_NUM}
+          requires:
+            - build_test
