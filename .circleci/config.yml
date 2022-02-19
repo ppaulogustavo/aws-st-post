@@ -1,7 +1,7 @@
 version: 2.1
 
 orbs:
-  aws-ecr: circleci/aws-ecr@0.0.4
+  aws-ecr: circleci/aws-ecr@7.3.0
 
 jobs:
   build_test:
@@ -49,7 +49,6 @@ jobs:
             echo 'export IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}' >> ${BASH_ENV}
             source ${BASH_ENV}
             docker build -t ${REPOSITORY}/${IMAGE_NAME} -t ${REPOSITORY}/${IMAGE_NAME}:${TAG} .
-            docker push ${REPOSITORY}/${IMAGE_NAME}
 
 workflows:
   version: 2
@@ -66,3 +65,4 @@ workflows:
           tag: ${CIRCLE_BUILD_NUM}
           requires:
             - build_test
+            - docker_hub_build_push_image
