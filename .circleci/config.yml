@@ -49,6 +49,7 @@ jobs:
             echo 'export IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}' >> ${BASH_ENV}
             source ${BASH_ENV}
             docker build -t ${REPOSITORY}/${IMAGE_NAME} -t ${REPOSITORY}/${IMAGE_NAME}:${TAG} .
+            docker push ${REPOSITORY}/${IMAGE_NAME}
 
 workflows:
   version: 2
