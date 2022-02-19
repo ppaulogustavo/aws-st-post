@@ -13,19 +13,19 @@ jobs:
     steps:
       - checkout
       - run: mkdir -p $TEST_RESULTS
-      - restore_cache:
-          keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
+#      - restore_cache:
+#          keys:
+#            - go-mod-v4-{{ checksum "go.sum" }}
       - run:
           name: Run tests
           command: |
             PACKAGE_NAMES=$(go list ./... | circleci tests split --split-by=timings --timings-type=classname)
             gotestsum --junitfile ${TEST_RESULTS}/gotestsum-report.xml -- $PACKAGE_NAMES
       - run: make
-      - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
+#      - save_cache:
+#          key: go-mod-v4-{{ checksum "go.sum" }}
+#          paths:
+#            - "/go/pkg/mod"
       - run:
           name: Validate service is working
           command: |
